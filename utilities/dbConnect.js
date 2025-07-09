@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const Db = process.env.ATLAS_URI;
+console.log('atlas ari', Db)
 
 const client = new MongoClient(Db, {
   serverApi: {
