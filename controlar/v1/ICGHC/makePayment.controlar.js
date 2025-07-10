@@ -162,7 +162,7 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
     transporter.sendMail(
       {
         from: `'ICGHC' ${process.env.NODE_MAILER_USER_EMAIL}`,
-        to: 'mehedi00154@gmail.com',
+        to: `mehedi00154@gmail.com, ${purcherAttendeesData.purcher.email}`,
         subject: 'International Conference on Global Health & Climate - Ticket Confirmation',
         html: htmlContent,
       },
