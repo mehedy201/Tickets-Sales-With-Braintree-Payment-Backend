@@ -151,15 +151,6 @@
             <strong >US$ <%= attendee?.taxDiscountCupon?.total || attendee.price %></strong>
           </div>
         </div>
-
-        <% if (attendee?.passportNumber) { %>
-          <div style="padding: 10px; border: 1px solid lightblue; border-radius: 10px; margin: 10px;">
-            <p style="font-size: 12px; margin: 2px 0px; padding-bottom: 10px; border-bottom: 1px solid lightblue;">Passport Details</p>
-            <p><%= attendee.passportNumber %></p>
-            <p><%= attendee.countryOfPassport %></p>
-            <p><%= attendee.passportExpiry %></p>
-          </div>
-        <% } %>
       </div>
     </div>
     <!--Purcher INFO Block  -->
