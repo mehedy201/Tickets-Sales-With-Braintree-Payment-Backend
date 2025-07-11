@@ -23,10 +23,10 @@ module.exports.getBraintreeToken = async (req, res, next) => {
 }
 
 // ______________________________________________________________________
-// Get ICGHC Ticket Payment______________________________________________
+// Get ThriveGlobalForum Ticket Payment______________________________________________
 // ______________________________________________________________________
 
-module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
+module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) => {
   const {
     nonce,
     lowTicketsQuantity,
@@ -38,6 +38,7 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
 
   const db = getDb();
   const session = db.client.startSession();
+
 
   try {
     // 1. Validate and calculate price server-side
@@ -111,7 +112,7 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
         };
 
         const insertPurcher = await db
-            .collection('ICGHC-Tickets-Purcher')
+            .collection('ThriveGlobalForum-Tickets-Purcher')
             .insertOne(purcherDetails, { session });
         purcherID = insertPurcher.insertedId;
 
@@ -125,7 +126,7 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
     }));
 
     const insertAttendees = await db
-        .collection('ICGHC-Tickets-Attendees')
+        .collection('ThriveGlobalForum-Tickets-Attendees')
         .insertMany(enrichedAttendees, { session });
 
     attendeesWithIds = Object.values(insertAttendees.insertedIds).map(
@@ -136,9 +137,15 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
     );
 
     await db
-        .collection('ICGHC-Tickets-Purcher')
+        .collection('ThriveGlobalForum-Tickets-Purcher')
         .updateOne({ _id: purcherID }, { $set: { attendees: attendeesWithIds } }, { session });
     });
+
+    //logo path 
+    // const logoPath = path.join(__dirname, 'views', 'logo--Thrive-global-forum.jpg');
+    // const logoData = fs.readFileSync(logoPath).toString('base64');
+    // const logo = `data:image/jpeg;base64,${logoData}`;
+    // console.log('logo', logo)
 
     // 4. Send confirmation email (non-blocking)
     const templatePath = path.join(__dirname, 'views', 'email-template.ejs');
@@ -156,14 +163,14 @@ module.exports.getICGHCpaymentsFromEventTickets = async (req, res) => {
         totalTickets,
         attendees: attendeesWithIds, 
         purcher: purcherAttendeesData.purcher,
-        createdAt: localDate(new Date())
+        createdAt: localDate(new Date()),
     });
 
     transporter.sendMail(
       {
-        from: `'ICGHC' ${process.env.NODE_MAILER_USER_EMAIL}`,
+        from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
         to: `mehedi00154@gmail.com, ${purcherAttendeesData.purcher.email}`,
-        subject: 'International Conference on Global Health & Climate - Ticket Confirmation',
+        subject: 'Global Leadership Forum on Technology, Health, and Climate Resilience',
         html: htmlContent,
       },
       (err, info) => {
@@ -209,13 +216,13 @@ module.exports.getPurcherData = async (req, res, next) => {
 
         // Fetch filtered data and count
         const [data, filteredCount] = await Promise.all([
-        db.collection('ICGHC-Tickets-Purcher')
+        db.collection('ThriveGlobalForum-Tickets-Purcher')
             .find(query) 
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit)
             .toArray(),
-        db.collection('ICGHC-Tickets-Purcher').countDocuments(query)
+        db.collection('ThriveGlobalForum-Tickets-Purcher').countDocuments(query)
         ]);
 
         const totalPages = Math.ceil(filteredCount / limit);
@@ -226,7 +233,7 @@ module.exports.getPurcherData = async (req, res, next) => {
         perPage: limit,
         totalCount: filteredCount,
         totalPages,
-        message: 'ICGHC Purcher DATA'
+        message: 'ThriveGlobalForum Purcher DATA'
         });
     } catch (error) {
         next(error);
@@ -238,8 +245,8 @@ module.exports.getSinglePurcherDetails = async (req, res, next) => {
     try {
         const db = getDb();
         const id = req.params.id;
-        const purcherDetails = await db.collection('ICGHC-Tickets-Purcher').findOne({_id: new ObjectId(id) })
-        res.send({status: 200, message: 'ICGHC purcher Details', data: purcherDetails});
+        const purcherDetails = await db.collection('ThriveGlobalForum-Tickets-Purcher').findOne({_id: new ObjectId(id) })
+        res.send({status: 200, message: 'ThriveGlobalForum purcher Details', data: purcherDetails});
     } catch (error) {
         next(error)
     }
@@ -255,7 +262,7 @@ module.exports.downloadPurcherDetails = async (req, res, next) => {
         return res.status(400).send('Invalid purcher ID');
         }
 
-        const purcher = await db.collection('ICGHC-Tickets-Purcher').findOne({
+        const purcher = await db.collection('ThriveGlobalForum-Tickets-Purcher').findOne({
         _id: new ObjectId(purcherID),
         });
 
@@ -310,7 +317,7 @@ module.exports.downloadFullPurcherExcel = async (req, res, next) => {
     try {
         const db = getDb();
 
-        const purchers = await db.collection('ICGHC-Tickets-Purcher')
+        const purchers = await db.collection('ThriveGlobalForum-Tickets-Purcher')
         .find({})
         .sort({ createdAt: -1 })
         .toArray();
@@ -391,15 +398,21 @@ module.exports.downloadAttendeesTickets = async (req, res, next) => {
         return res.status(400).send('Invalid attendee ID');
         }
 
-        const attendee = await db.collection('ICGHC-Tickets-Attendees').findOne({
+        const attendee = await db.collection('ThriveGlobalForum-Tickets-Attendees').findOne({
         _id: new ObjectId(attendeeId),
         });
 
         if (!attendee) return res.status(404).send('Attendee not found');
         const templatePath = path.join(__dirname, 'views', 'ticket-template.ejs');
         const htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
+
+        //logo path 
+        const logoPath = path.join(__dirname, 'views', 'logo--Thrive-global-forum.jpg');
+        const logoData = fs.readFileSync(logoPath).toString('base64');
+        const logo = `data:image/jpeg;base64,${logoData}`;
         const html = ejs.render(htmlTemplate, {
             attendee,
+            logo,
             createdAt: localDate(attendee.createdAt)
         });
 
@@ -456,13 +469,13 @@ module.exports.getAttendeesData = async (req, res, next) => {
 
         // Fetch filtered data and count
         const [data, filteredCount] = await Promise.all([
-        db.collection('ICGHC-Tickets-Attendees')
+        db.collection('ThriveGlobalForum-Tickets-Attendees')
             .find(query) // ✅ use the query here
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit)
             .toArray(),
-        db.collection('ICGHC-Tickets-Attendees').countDocuments(query)
+        db.collection('ThriveGlobalForum-Tickets-Attendees').countDocuments(query)
         ]);
 
         const totalPages = Math.ceil(filteredCount / limit);
@@ -473,7 +486,7 @@ module.exports.getAttendeesData = async (req, res, next) => {
         perPage: limit,
         totalCount: filteredCount,
         totalPages,
-        message: 'ICGHC Attendees DATA'
+        message: 'ThriveGlobalForum Attendees DATA'
         });
     } catch (error) {
         next(error);
@@ -484,7 +497,7 @@ module.exports.getAttendeesData = async (req, res, next) => {
 module.exports.downloadFullAttendeesExcel = async (req, res, next) => {
   try {
     const db = getDb();
-    const attendees = await db.collection('ICGHC-Tickets-Attendees')
+    const attendees = await db.collection('ThriveGlobalForum-Tickets-Attendees')
       .find({})
       .sort({ createdAt: -1 })
       .toArray();

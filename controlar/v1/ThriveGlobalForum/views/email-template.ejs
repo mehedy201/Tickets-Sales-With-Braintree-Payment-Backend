@@ -59,14 +59,13 @@
 <body>
   <div class="email-wrapper">
     <div class="header">
-      <h1>International Conference on Global Health and Climate</h1>
-      <p>Oct 19 to 22, 2025</p>
+      <h1>Global Leadership Forum on Technology, Health, and Climate Resilience</h1>
+      <p>May 25–28, 2026</p>
     </div>
     <div class="content">
-      <div class="success">
-        ✅ Success<br/>
-        Transaction ID: <%= transactionID %> <br><br> <%= createdAt %>
-      </div>
+      <table>
+        <tr><td>Transaction ID: <%= transactionID %></td><td align="right"><%= createdAt %></td></tr>
+      </table>
 
       <h3>Ticket Details</h3>
       <table>
@@ -82,7 +81,7 @@
         <tr><td><strong>Actual Amount</strong></td><td align="right"><strong>US$<%= totalPrice %></strong></td></tr>
 
         <% if (taxAmount > 0) { %>
-          <tr><td>HSB Tax (15%)</td><td align="right">$<%= taxAmount %></td></tr>
+          <tr><td>Harmonized Sales Tax (HST) (15%)</td><td align="right">$<%= taxAmount %></td></tr>
         <% } %>
         <% if (groupDiscount > 0) { %>
           <tr><td>Group Discount (10%)</td><td align="right">$<%= groupDiscount %></td></tr>
@@ -101,7 +100,7 @@
             <%= att.ticketsType %>
           </div>
           <div class="attendee_download">
-            <a href="http://localhost:5000/api/v1/icghc/download-attendees-tickets/<%= att._id %>" class="btn">Download Ticket</a>
+            <a href="https://tickets-sales-with-braintree-payment-backend-production.up.railway.app/api/v1/ThriveGlobalForum/download-attendees-tickets/<%= att._id %>" class="btn">Download Ticket</a>
           </div>
         </div>
       <% }) %>

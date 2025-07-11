@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const app = express();
+const path = require('path');
 
 // middleware Start_________________________________
 app.use(cors());
@@ -15,6 +16,8 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
+// app.use('/logo', express.static(path.join(__dirname, 'controlar/v1/ThriveGlobalForum/views')));
+
 
 // DB Import & MongoDB Connected______________________________________________________
 const dbConnection = require('./utilities/dbConnect');
@@ -23,9 +26,9 @@ dbConnection.connectToServer();
 const braintreeConnection = require('./utilities/braintreeConnect');       
 braintreeConnection.connectToBraintree();
 
-// ICGHC API routes ___________________________________________________________________
-const ICGHC = require('./routes/v1/ICGHC/makePayment.route');
-app.use('/api/v1/icghc', ICGHC);
+// ThriveGlobalForum API routes ___________________________________________________________________
+const ThriveGlobalForum = require('./routes/v1/ThriveGlobalForum/makePayment.route');
+app.use('/api/v1/ThriveGlobalForum', ThriveGlobalForum);
 
 
 
