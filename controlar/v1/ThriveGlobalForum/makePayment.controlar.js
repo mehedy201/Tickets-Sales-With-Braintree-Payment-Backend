@@ -26,6 +26,29 @@ module.exports.getBraintreeToken = async (req, res, next) => {
 // Get ThriveGlobalForum Ticket Payment______________________________________________
 // ______________________________________________________________________
 
+
+const templatePath = path.join(__dirname, 'views', 'attendees-email.ejs');
+const htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
+const sendEmailToAttendee = async (attendee) => {
+  try {
+    const htmlContent = ejs.render(htmlTemplate, {
+      firstName: attendee.firstName,
+      id: attendee._id,
+    });
+
+    const info = await transporter.sendMail({
+      from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
+      to: attendee.email,
+      subject: 'Global Leadership Forum on Technology, Health, and Climate Resilience',
+      html: htmlContent
+    });
+
+    console.log(`✅ Email sent to ${attendee.email}: ${info.response}`);
+  } catch (err) {
+    console.error(`❌ Email failed to ${attendee.email}:`, err.message);
+  }
+};
+
 module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) => {
   const {
     nonce,
@@ -123,7 +146,7 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
             purcherID,
             paymentStatus: 'Completed',
             createdAt: new Date(),
-    }));
+        }));
 
     const insertAttendees = await db
         .collection('ThriveGlobalForum-Tickets-Attendees')
@@ -178,6 +201,11 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
         else console.log('Email sent:', info.response);
       }
     );
+
+
+    for (const attendee of attendeesWithIds) {
+      await sendEmailToAttendee(attendee); 
+    }
 
     // 5. Return success response
     res.status(200).json({
