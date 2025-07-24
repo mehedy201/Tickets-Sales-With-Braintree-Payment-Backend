@@ -435,7 +435,7 @@ module.exports.downloadAttendeesTickets = async (req, res, next) => {
         const htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
 
         //logo path 
-        const logoPath = path.join(__dirname, 'views', 'logo--Thrive-global-forum.jpg');
+        const logoPath = path.join(__dirname, 'views', 'logo.jpg');
         const logoData = fs.readFileSync(logoPath).toString('base64');
         const logo = `data:image/jpeg;base64,${logoData}`;
         const html = ejs.render(htmlTemplate, {
