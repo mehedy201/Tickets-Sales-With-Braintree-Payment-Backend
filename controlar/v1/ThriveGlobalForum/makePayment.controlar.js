@@ -39,7 +39,7 @@ const sendEmailToAttendee = async (attendee) => {
     const info = await transporter.sendMail({
       from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
       to: attendee.email,
-      subject: 'Acknowledgement of Registration-Global Leadership Forum on Technology, Health, and Climate Resilience',
+      subject: 'Acknowledgement of Registration-International Conference on Entrepreneurship, Health and Climate',
       html: htmlContent
     });
 
@@ -193,7 +193,7 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
       {
         from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
         to: `mehedi00154@gmail.com, ${purcherAttendeesData.purcher.email}`,
-        subject: 'Global Leadership Forum on Technology, Health, and Climate Resilience',
+        subject: 'International Conference on Entrepreneurship, Health and Climate',
         html: htmlContent,
       },
       (err, info) => {
