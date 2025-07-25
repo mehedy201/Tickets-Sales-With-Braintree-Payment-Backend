@@ -6,7 +6,7 @@ module.exports = {
   connectToBraintree: function () {
     try {
       gateway = new braintree.BraintreeGateway({
-        environment: braintree.Environment.Sandbox, // 🔄 Change to Production in live
+        environment: braintree.Environment.Production, // 🔄 Change to Production in live
         merchantId: process.env.BT_MERCHANT_ID,
         publicKey: process.env.BT_PUBLIC_KEY,
         privateKey: process.env.BT_PRIVATE_KEY,
