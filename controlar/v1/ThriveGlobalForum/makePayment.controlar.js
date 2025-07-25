@@ -92,8 +92,8 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
 
     // Coupon discount
     let couponDiscount = 0;
-    if (cuponCode === 'Mehedi') {
-      couponDiscount = 300;
+    if (cuponCode === 'Malik03') {
+      couponDiscount = 505;
       totalWithTax -= couponDiscount;
     }
 
