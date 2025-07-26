@@ -28,11 +28,15 @@ braintreeConnection.connectToBraintree();
 
 // ThriveGlobalForum API routes ___________________________________________________________________
 const ThriveGlobalForum = require('./routes/v1/ThriveGlobalForum/makePayment.route');
+
 app.use('/api/v1/ThriveGlobalForum', ThriveGlobalForum);
 
 
 
-
+// ✅ Railway health check route
+app.get("/", (req, res) => {
+    res.send("✅ ThriveGlobalForum API is live");
+});
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
