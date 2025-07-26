@@ -65,9 +65,9 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
 
   try {
     // 1. Validate and calculate price server-side
-    const lowPrice = 440,
-      fullPrice = 500,
-      corpPrice = 550,
+    const lowPrice = 400,
+      fullPrice = 450,
+      corpPrice = 500,
       taxRate = 0.15;
 
     const totalTickets = lowTicketsQuantity + fullTicketsQuantity + corporateTicketsQuantity;
@@ -93,7 +93,7 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
     // Coupon discount
     let couponDiscount = 0;
     if (cuponCode === 'Malik03') {
-      couponDiscount = 505;
+      couponDiscount = 459;
       totalWithTax -= couponDiscount;
     }
 
@@ -164,12 +164,6 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
         .updateOne({ _id: purcherID }, { $set: { attendees: attendeesWithIds } }, { session });
     });
 
-    //logo path 
-    // const logoPath = path.join(__dirname, 'views', 'logo--Thrive-global-forum.jpg');
-    // const logoData = fs.readFileSync(logoPath).toString('base64');
-    // const logo = `data:image/jpeg;base64,${logoData}`;
-    // console.log('logo', logo)
-
     // 4. Send confirmation email (non-blocking)
     const templatePath = path.join(__dirname, 'views', 'email-template.ejs');
     const htmlTemplate = fs.readFileSync(templatePath, 'utf-8');
@@ -192,7 +186,19 @@ module.exports.getThriveGlobalForumpaymentsFromEventTickets = async (req, res) =
     transporter.sendMail(
       {
         from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
-        to: `mehedi00154@gmail.com, ${purcherAttendeesData.purcher.email}`,
+        to: `${purcherAttendeesData.purcher.email}`,
+        subject: 'International Conference on Entrepreneurship, Health and Climate',
+        html: htmlContent,
+      },
+      (err, info) => {
+        if (err) console.error('Email sending error:', err);
+        else console.log('Email sent:', info.response);
+      }
+    );
+    transporter.sendMail(
+      {
+        from: `'Thrive Global Forum' ${process.env.NODE_MAILER_USER_EMAIL}`,
+        to: `registration@thriveglobalforum.com`,
         subject: 'International Conference on Entrepreneurship, Health and Climate',
         html: htmlContent,
       },
