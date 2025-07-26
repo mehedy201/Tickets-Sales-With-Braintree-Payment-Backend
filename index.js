@@ -16,9 +16,6 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-// app.use('/logo', express.static(path.join(__dirname, 'controlar/v1/ThriveGlobalForum/views')));
-
-
 // DB Import & MongoDB Connected______________________________________________________
 const dbConnection = require('./utilities/dbConnect');
 dbConnection.connectToServer();
@@ -33,10 +30,10 @@ app.use('/api/v1/ThriveGlobalForum', ThriveGlobalForum);
 
 
 
-// ✅ Railway health check route
 app.get("/", (req, res) => {
-    res.send("✅ ThriveGlobalForum API is live");
+    res.send("ThriveGlobalForum API is live");
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
